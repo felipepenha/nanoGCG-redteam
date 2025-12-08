@@ -8,3 +8,7 @@ results/
 
 env
 venv
+
+# Logs
+*.log
+*.pid

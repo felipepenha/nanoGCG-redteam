@@ -1,0 +1,16 @@
+[project]
+name = "mock-api-attack"
+version = "0.1.0"
+description = "Example of attacking a mock API using nanoGCG-redteam"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "transformers",
+    "torch",
+    "nanogcg-redteam",
+    "tomli"
+]
+
+[tool.uv.sources]
+nanogcg-redteam = { path = "../../", editable = true }

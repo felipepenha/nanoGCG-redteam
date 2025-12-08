@@ -3,12 +3,15 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nanogcg"
-version = "0.3.0"
+name = "nanogcg-redteam"
+version = "0.1.0"
 authors = [
-    { name="Justin Wang", email="justin@grayswan.ai" },
+    {name = "Felipe Campos Penha", email = "felipe.penha@owasp.org"}
 ]
-description = "A lightweight implementation of the GCG algorithm"
+maintainers = [
+    {name = "Felipe Campos Penha", email = "felipe.penha@owasp.org"}
+]
+description = "An adaptation of nanoGCG more suitable for GenAI Red Teaming exercises against deployed systems."
 readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -25,8 +28,18 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["nanogcg"]
+packages = ["nanogcg_redteam"]
 
 [project.urls]
-Homepage = "https://github.com/GraySwanAI/nanoGCG"
-Issues = "https://github.com/GraySwanAI/nanoGCG/issues"
+Homepage = "https://github.com/felipepenha/nanoGCG-redteam"
+Issues = "https://github.com/felipepenha/nanoGCG-redteam/issues"
+
+[dependency-groups]
+dev = [
+    "black",
+    "isort",
+    "mypy",
+    "types-setuptools",
+    "types-requests",
+    "types-tqdm",
+]
