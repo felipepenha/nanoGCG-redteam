@@ -37,13 +37,14 @@ async def predict(request: PromptRequest):
     try:
         prompt = request.data[0]
         inputs = tokenizer(prompt, return_tensors="pt").to(device)
+        input_len = inputs["input_ids"].shape[1]
 
         with torch.no_grad():
             outputs = model.generate(
                 **inputs, max_new_tokens=20, pad_token_id=tokenizer.eos_token_id
             )
 
-        response_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        response_text = tokenizer.decode(outputs[0][input_len:], skip_special_tokens=True)
         return {"data": [response_text]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

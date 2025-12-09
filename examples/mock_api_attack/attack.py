@@ -56,6 +56,7 @@ config = GCGConfig(
     num_steps=config_toml["attack"]["parameters"]["num_steps"],
     search_width=config_toml["attack"]["parameters"]["search_width"],
     topk=config_toml["attack"]["parameters"]["topk"],
+    target_eval_interval=config_toml["attack"]["parameters"].get("target_eval_interval", 5),
 )
 
 # 5. Load Local Proxy Model (Mistral)

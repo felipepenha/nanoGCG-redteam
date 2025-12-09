@@ -56,6 +56,7 @@ class GCGConfig:
     add_space_before_target: bool = False
     seed: Optional[int] = None
     verbosity: str = "INFO"
+    target_eval_interval: int = 1
     probe_sampling_config: Optional[ProbeSamplingConfig] = None
     target: Optional[Target] = None
 
@@ -347,7 +348,7 @@ class GCG:
         optim_strings = []
         target_results = []
 
-        for _ in tqdm(range(config.num_steps)):
+        for i in tqdm(range(config.num_steps)):
             # Compute the token gradient
             optim_ids_onehot_grad = self.compute_token_gradient(optim_ids)
 
@@ -417,7 +418,7 @@ class GCG:
 
             buffer.log_buffer(tokenizer)
 
-            if target_model or config.target:
+            if (target_model or config.target) and (i + 1) % config.target_eval_interval == 0:
                 eval_target = target_model or config.target
                 # Evaluate the best string against the target
                 # We need to reconstruct the full prompt with the optimized string

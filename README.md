@@ -143,6 +143,10 @@ The parameters that can be configured and their defaults are:
 
 - `seed: int = None` - the random seed to use
 
+- `target_eval_interval: int = 1` - the interval at which to evaluate the optimized string against the target (e.g., every 5 steps).
+    > [!NOTE]
+    > Increasing this interval significantly reduces runtime by skipping slow network calls to the API. It does **not** affect the optimization quality, as the GCG algorithm relies solely on the local proxy model for gradients. The only trade-off is less granular logging of when the attack first succeeded.
+
 - `verbosity: str = "INFO"` - the reported logging error level (e.g. "ERROR", "WARNING", "INFO")
 
 - `probe_sampling_config: ProbeSamplingConfig = None` - A collection of configurable parameters for probe sampling. See the example below.
@@ -328,6 +332,23 @@ Configurable fields for `probe_sampling_config` are:
 - `r: int = 8` - controls how aggressively to reduce the candidate set based on draft model predictions. 8 is recommendation by the paper for its balance of performance and ASR.
 
 - `sampling_factor: int = 16` - determines what fraction of the total candidates to use as the probe set. 16 is recommended by the paper.
+
+## Architecture & Transferability
+
+When attacking external black-box systems, `nanoGCG-redteam` utilizes a **3-Model Architecture**. Understanding the role of each model is key to successful Red Teaming.
+
+1.  **Target Model (Black-Box):** The system you want to attack (e.g., an API endpoint, a chatbot). You cannot compute gradients on this model.
+2.  **Proxy Model (White-Box):** A local model (e.g., Mistral-7B, Llama-3) used to estimate gradients. We optimize the attack on the Proxy, relying on **Adversarial Transferability**—the property that attacks generated on one model often work on others.
+3.  **Draft Model (Probe):** A small, fast model (e.g., GPT-2) used to filter candidate attacks. This acts purely as a computational accelerator (Probe Sampling) and does not affect the optimization objective.
+
+### Tokenizer Alignment
+For the best results, it is critical to **choose a Proxy Model that is architecturally similar to the Target**. The most important factor is the **Tokenizer**.
+
+*   **Ideally:** Proxy and Target use the same tokenizer (e.g., attacking OpenAI GPT-4 using a Llama-3 or Tiktoken-based Proxy).
+*   **Risky:** Proxy and Target tokenizers are vastly different (e.g., attacking a Llama-based model using a GPT-2 Proxy).
+
+> [!TIP]
+> **Tokenizer Mismatch** can significantly degrade the success rate because the "optimized tokens" on the Proxy might translate to a completely different (and benign) string of text for the Target. Always try to match the model family (e.g., Mistral Proxy for Mistral Target, Llama Proxy for Llama Target) whenever possible.
 
 ## License
 

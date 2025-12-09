@@ -21,4 +21,4 @@ clean:
 	fi
 	@rm -f server.log
 
-all: install run-server attack clean
+all: clean install run-server attack clean
