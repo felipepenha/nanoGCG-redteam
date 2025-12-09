@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nanogcg-redteam"
-version = "0.1.0"
+version = "0.1.2"
 authors = [
     {name = "Felipe Campos Penha", email = "felipe.penha@owasp.org"}
 ]
